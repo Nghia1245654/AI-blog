@@ -34,7 +34,7 @@ const Editor = ({  }) => {
           history = [];
         }
         const item = {
-          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          id: Date.now(),
           topic: inputValue ?? "",
           content: text ?? "",
           createdAt: new Date().toISOString(),
