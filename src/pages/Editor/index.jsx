@@ -54,6 +54,7 @@ const Editor = ({  }) => {
   };
  
   // Lưu contentBlog vào localStorage khi được cập nhật
+  const [localStorageBlog, setLocalStorageBlog] = useState("");
   useEffect(() => {
     localStorage.setItem("blogAi", JSON.stringify(contentBlog));
     // Lưu inputValue vào localStorage khi được cập nhật
