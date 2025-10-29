@@ -1,35 +1,25 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { DialogDelete } from "../DialogDelete";
+import notFound from "@/assets/notFound.json";
+import Lottie from "lottie-react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-
-
-const HistoryList = ( ) => {
-  const [open, setOpen] = useState(false);
-  const openDialogDelete  = () => {
-    setOpen(true);
-  }
-
-
-  // Đọc mảng lịch sử từ localStorage: blogAiHistory
-  const loadHistory = () => {
-    const raw = localStorage.getItem("blogAiHistory");
-    if (!raw) return [];
-    try {
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  };
-
-  const [posts, setPosts] = useState(loadHistory);
-
-  useEffect(() => {
-    setPosts(loadHistory());
-  }, []);
-
-  if (!posts.length) return <p>Không tìm thấy lịch sử bài viết nào.</p>;
+const HistoryList = ({ posts, openDialogDelete, openViewDialog, contentBlog, setContentBlog}) => {
+  if (posts.length == 0)
+    return (
+      <div className="mx-auto">
+        <h1 className="text-3xl font-bold">Hi, here is your history</h1>
+        <Lottie
+          className="w-64 h-64 mx-auto"
+          animationData={notFound}
+          loop={true}
+        />
+        <div className="text-center text-lg text-muted-foreground">
+          No history found
+        </div>
+      </div>
+    );
 
   return (
     <main className="container mx-auto px-4 py-12">
@@ -37,15 +27,22 @@ const HistoryList = ( ) => {
         <h1 className="text-3xl font-bold">Hi, here is your history</h1>
         <div className="grid sm:grid-cols-2 grid-cols-1 gap-4">
           {posts.map((item) => (
-            <div key={item.id} className="bg-card w-full text-card-foreground gap-6 justify-between rounded-xl border p-6 shadow-sm">
+            <div
+              key={item.id}
+              className="bg-card w-full text-card-foreground gap-6 justify-between rounded-xl border p-6 shadow-sm"
+            >
               <h2 className="text-2xl font-bold mb-4 text-ellipsis overflow-hidden whitespace-nowrap">
                 {item.topic}
               </h2>
-              <div className="text-sm whitespace-pre-line break-words">
-                {item.content}
+              {/* if content to long, show ellipsis 3 lines*/}
+              <div className="text-sm overflow-hidden text-ellipsis line-clamp-3">
+                <Markdown remarkPlugins={[remarkGfm]}>{item.content}</Markdown>
               </div>
               <div className="flex justify-start gap-2 mt-4">
                 <button
+                  onClick={() => {
+                    openViewDialog(item.id, item.content);
+                  }}
                   data-slot="button"
                   className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 h-9 has-[>svg]:px-3 bg-primary text-primary-foreground px-4 py-2 rounded-md"
                 >
@@ -67,7 +64,7 @@ const HistoryList = ( ) => {
                   </svg>
                 </button>
                 <button
-                  onClick={openDialogDelete}
+                  onClick={() => openDialogDelete(item.id)}
                   data-slot="button"
                   className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 h-9 has-[>svg]:px-3 bg-destructive text-destructive-foreground px-4 py-2 rounded-md"
                 >
@@ -96,7 +93,6 @@ const HistoryList = ( ) => {
           ))}
         </div>
       </div>
-     <DialogDelete open={open} setOpen={setOpen} setPosts={setPosts} />
     </main>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-const BlogTopicForm = ({ inputValue, handleCreate, setInputValue, isLoading, localStorageBlog }) => {
+const BlogTopicForm = ({ inputValue, handleCreate, setInputValue, isLoading }) => {
   
   return (
     <>
@@ -14,7 +14,11 @@ const BlogTopicForm = ({ inputValue, handleCreate, setInputValue, isLoading, loc
           <div className="w-full flex gap-2">
             <div className="w-full flex align-center justify-center gap-2">
               <input
-              
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleCreate();
+                  }
+                }}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 data-slot="input"
@@ -23,11 +27,7 @@ const BlogTopicForm = ({ inputValue, handleCreate, setInputValue, isLoading, loc
                 type="text"
               />
             </div>
-            <Button  onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleCreate();
-                }
-              }}
+            <Button  
             className="inline-flex  items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 has-[>svg]:px-3 h-full"   onClick={handleCreate} disabled={isLoading}>    
               {isLoading && <Spinner className="mr-2" />}
               Tạo Nội Dung

@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const Editor = ({  }) => {
   const [inputValue, setInputValue] = useState("");
+  const [blogAiHistory, setBlogAiHistory] = useState(JSON.parse(localStorage.getItem("blogAiHistory")) || []);
     
   const [contentBlog, setContentBlog] = useState("");
     
@@ -22,28 +23,39 @@ const Editor = ({  }) => {
       // lấy text trả về và cập nhật state
       const text = result?.response?.candidates?.[0]?.content?.parts?.[0]?.text || "";
       console.log(text);
+      debugger;
       setContentBlog(text);
+      const item = {
+        id: Date.now(),
+        topic: inputValue,
+        content: text,
+      };
+      //add item vào blogAiHistory
+      setBlogAiHistory([item, ...blogAiHistory]);
+      //save localStorage 
+      localStorage.setItem("blogAiHistory", JSON.stringify([item, ...blogAiHistory]));
+      
 
       // Thêm vào lịch sử để không mất bản cũ
-      try {
-        const raw = localStorage.getItem("blogAiHistory");
-        let history;
-        try {
-          history = raw ? JSON.parse(raw) : [];
-        } catch {
-          history = [];
-        }
-        const item = {
-          id: Date.now(),
-          topic: inputValue ?? "",
-          content: text ?? "",
-          createdAt: new Date().toISOString(),
-        };
-        const updated = [item, ...(Array.isArray(history) ? history : [])].slice(0, 100);
-        localStorage.setItem("blogAiHistory", JSON.stringify(updated));
-      } catch (e) {
-        console.warn("Không thể lưu lịch sử vào localStorage:", e);
-      }
+      // try {
+      //   const raw = localStorage.getItem("blogAiHistory");
+      //   let history;
+      //   try {
+      //     history = raw ? JSON.parse(raw) : [];
+      //   } catch {
+      //     history = [];
+      //   }
+      //   const item = {
+      //     id: Date.now(),
+      //     topic: inputValue ?? "",
+      //     content: text ?? "",
+      //     createdAt: new Date().toISOString(),
+      //   };
+      //   const updated = [item, ...(Array.isArray(history) ? history : [])].slice(0, 100);
+      //   localStorage.setItem("blogAiHistory", JSON.stringify(updated));
+      // } catch (e) {
+      //   console.warn("Không thể lưu lịch sử vào localStorage:", e);
+      // }
     } catch (err) {
       console.error("generateContent error:", err);
     } finally {
@@ -54,38 +66,15 @@ const Editor = ({  }) => {
   };
  
   // Lưu contentBlog vào localStorage khi được cập nhật
-  const [localStorageBlog, setLocalStorageBlog] = useState("");
-  useEffect(() => {
-    localStorage.setItem("blogAi", JSON.stringify(contentBlog));
-    // Lưu inputValue vào localStorage khi được cập nhật
-    localStorage.setItem("inputValue", JSON.stringify(inputValue));
-    setLocalStorageBlog(contentBlog);
-  }, [contentBlog, inputValue]);
+  // const [localStorageBlog, setLocalStorageBlog] = useState("");
+  // useEffect(() => {
+  //   localStorage.setItem("blogAi", JSON.stringify(contentBlog));
+  //   // Lưu inputValue vào localStorage khi được cập nhật
+  //   localStorage.setItem("inputValue", JSON.stringify(inputValue));
+  //   setLocalStorageBlog(contentBlog);
+  // }, [contentBlog, inputValue]);
 
-  const handleCopy = async () => {
-  // Dùng Clipboard API của trình duyệt để ghi text vào bộ nhớ tạm
-  await navigator.clipboard.writeText(contentBlog);
-};
-  const handleDownload = () => {
-  // 1️⃣ Tạo blob từ nội dung
-  const blob = new Blob([contentBlog], { type: "text/plain" });
 
-  // 2️⃣ Tạo URL tạm thời cho blob
-  const url = URL.createObjectURL(blob);
-
-  // 3️⃣ Tạo thẻ <a> để mô phỏng hành động tải xuống
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "blog-content.txt";
-
-  // 4️⃣ Thêm vào DOM và click tự động
-  document.body.appendChild(a);
-  a.click();
-
-  // 5️⃣ Dọn dẹp
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-};
   return (
     <div className="grid gap-6">
       <BlogTopicForm
@@ -93,9 +82,8 @@ const Editor = ({  }) => {
         setInputValue={setInputValue}
         handleCreate={handleCreate}
         isLoading={isLoading}
-        localStorageBlog={localStorageBlog}
       />
-      <PreviewContent contentBlog={contentBlog} handleCopy={handleCopy} handleDownload={handleDownload} />
+      <PreviewContent contentBlog={contentBlog} />
     </div>
   );
 };

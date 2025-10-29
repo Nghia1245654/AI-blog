@@ -1,6 +1,32 @@
 import React from "react";
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
-const PreviewContent = ({contentBlog, handleCopy, handleDownload}) => {
+const PreviewContent = ({contentBlog}) => {
+    const handleCopy = async () => {
+  // Dùng Clipboard API của trình duyệt để ghi text vào bộ nhớ tạm
+  await navigator.clipboard.writeText(contentBlog);
+};
+  const handleDownload = () => {
+  // 1️⃣ Tạo blob từ nội dung
+  const blob = new Blob([contentBlog], { type: "text/plain" });
+
+  // 2️⃣ Tạo URL tạm thời cho blob
+  const url = URL.createObjectURL(blob);
+
+  // 3️⃣ Tạo thẻ <a> để mô phỏng hành động tải xuống
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "blog-content.txt";
+
+  // 4️⃣ Thêm vào DOM và click tự động
+  document.body.appendChild(a);
+  a.click();
+
+  // 5️⃣ Dọn dẹp
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
   return (
     <div className=" w-full text-card-foreground gap-6 justify-between rounded-xl  bg-card border shadow-sm p-6">
       <div className="flex flex-col gap-2 md:flex-row justify-between items-start mb-8 border-b pb-6">
@@ -59,7 +85,8 @@ const PreviewContent = ({contentBlog, handleCopy, handleDownload}) => {
       </div>
       <div className="grid gap-8 min-h-28">
         {contentBlog ? 
-        <p className="text-center text-muted-foreground">{contentBlog}</p>
+          // <ReactMarkdown remarkPlugins={[remarkGfm]}>{contentBlog}</ReactMarkdown>
+           <Markdown remarkPlugins={[remarkGfm]}>{contentBlog}</Markdown>
          : <p className="text-center text-muted-foreground">Chưa có nội dung để hiển thị.</p>}
       </div>
     </div>
