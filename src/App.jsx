@@ -6,6 +6,7 @@ import History from "./pages/History";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import { Spinner } from "./components/ui/spinner";
+import { Toaster } from "react-hot-toast";
 
 function App() {
 
@@ -13,8 +14,9 @@ function App() {
   return (
     <>
       <BrowserRouter>
+           <Toaster position="top-right" />
         <Routes>
-          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="/editor" element={<Editor />} />
             <Route path="/history" element={<History />} />

@@ -83,7 +83,7 @@ const Editor = ({  }) => {
         handleCreate={handleCreate}
         isLoading={isLoading}
       />
-      <PreviewContent contentBlog={contentBlog} />
+      <PreviewContent inputValue={inputValue} contentBlog={contentBlog} />
     </div>
   );
 };

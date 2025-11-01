@@ -8,9 +8,10 @@ const History = () => {
     //tạo hai state open để kiểm soát việc hiển thị dialog
     const [openDelete, setOpenDelete] = useState(false);
     const [openView, setOpenView] = useState(false);
-
   const [selectedId, setSelectedId] = useState("");
   const [contentBlog, setContentBlog] = useState("");
+  //tạo state inputValue để lưu giá trị nhập vào khi tạo bài viết
+  
   const openDialogDelete  = (id) => {
     setOpenDelete(true);
     setSelectedId(id);
@@ -19,6 +20,7 @@ const History = () => {
     setOpenView(true);
     setSelectedId(id);
     setContentBlog(posts.find((item) => item.id === id).content);
+    setInputValue(posts.find((item) => item.id === id).inputValue);
   }
   
   // tạo chức năng handleDelete để xóa bài viết
@@ -34,7 +36,7 @@ const History = () => {
     <>
       <Historylist posts={posts} openDialogDelete={openDialogDelete} openViewDialog={openViewDialog} />
       <DialogDelete openDelete={openDelete} onOpenChange={setOpenDelete} handleDelete={handleDelete} />
-      <ViewDialog  openView={openView} onOpenChange={setOpenView}  contentBlog={contentBlog} />
+      <ViewDialog  openView={openView} onOpenChange={setOpenView}  contentBlog={contentBlog}/>
     </>
   )
 }

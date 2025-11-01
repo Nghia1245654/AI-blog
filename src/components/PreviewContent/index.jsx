@@ -1,11 +1,13 @@
 import React from "react";
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { toast } from "react-hot-toast";
 
-const PreviewContent = ({contentBlog}) => {
+const PreviewContent = ({contentBlog,inputValue}) => {
     const handleCopy = async () => {
   // Dùng Clipboard API của trình duyệt để ghi text vào bộ nhớ tạm
   await navigator.clipboard.writeText(contentBlog);
+  toast.success("Sao chép thành công 🎉");
 };
   const handleDownload = () => {
   // 1️⃣ Tạo blob từ nội dung
@@ -17,7 +19,8 @@ const PreviewContent = ({contentBlog}) => {
   // 3️⃣ Tạo thẻ <a> để mô phỏng hành động tải xuống
   const a = document.createElement("a");
   a.href = url;
-  a.download = "blog-content.txt";
+  //them gạch ngang cho inputvalue
+  a.download = `${inputValue.replace(/\s+/g, '-').toLowerCase()}.txt`;
 
   // 4️⃣ Thêm vào DOM và click tự động
   document.body.appendChild(a);
@@ -26,6 +29,7 @@ const PreviewContent = ({contentBlog}) => {
   // 5️⃣ Dọn dẹp
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+  toast.success("Tải xuống thành công 🎉");
 };
   return (
     <div className=" w-full text-card-foreground gap-6 justify-between rounded-xl  bg-card border shadow-sm p-6">
