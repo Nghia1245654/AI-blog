@@ -12,7 +12,7 @@ import {
 
 import PreviewContent from "@/components/PreviewContent";
 
-export default function ViewDialog({ openView, onOpenChange ,contentBlog,inputValue}) {
+export default function ViewDialog({ openView, onOpenChange, contentBlog, inputValue }) {
 //tạo state contentBlog
   return (
     <Dialog open={openView} onOpenChange={onOpenChange}>

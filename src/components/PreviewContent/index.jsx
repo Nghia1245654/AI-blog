@@ -3,7 +3,7 @@ import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { toast } from "react-hot-toast";
 
-const PreviewContent = ({contentBlog,inputValue}) => {
+const PreviewContent = ({ contentBlog, inputValue }) => {
     const handleCopy = async () => {
   // Dùng Clipboard API của trình duyệt để ghi text vào bộ nhớ tạm
   await navigator.clipboard.writeText(contentBlog);
@@ -19,8 +19,9 @@ const PreviewContent = ({contentBlog,inputValue}) => {
   // 3️⃣ Tạo thẻ <a> để mô phỏng hành động tải xuống
   const a = document.createElement("a");
   a.href = url;
-  //them gạch ngang cho inputvalue
-  a.download = `${inputValue.replace(/\s+/g, '-').toLowerCase()}.txt`;
+  // Tên file an toàn kể cả khi inputValue trống/undefined
+  const safeName = ((inputValue ?? "blog-content").toString()).replace(/\s+/g, "-").toLowerCase();
+  a.download = `${safeName}.txt`;
 
   // 4️⃣ Thêm vào DOM và click tự động
   document.body.appendChild(a);
@@ -74,9 +75,9 @@ const PreviewContent = ({contentBlog,inputValue}) => {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="w-4 h-4"
             >
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>

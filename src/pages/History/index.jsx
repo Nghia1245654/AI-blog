@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Historylist from '../../components/HistoryList'
 import DialogDelete from '../../components/DialogDelete'
 import ViewDialog from '../../components/ViewDialog'
-import PreviewContent from '../../components/PreviewContent'
 const History = () => {
    const [posts, setPosts] = useState(JSON.parse(localStorage.getItem("blogAiHistory")) || []);
     //tạo hai state open để kiểm soát việc hiển thị dialog
@@ -10,8 +9,8 @@ const History = () => {
     const [openView, setOpenView] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   const [contentBlog, setContentBlog] = useState("");
+  const [topic, setTopic] = useState("");
   //tạo state inputValue để lưu giá trị nhập vào khi tạo bài viết
-  
   const openDialogDelete  = (id) => {
     setOpenDelete(true);
     setSelectedId(id);
@@ -19,8 +18,9 @@ const History = () => {
     const openViewDialog  = (id) => {
     setOpenView(true);
     setSelectedId(id);
-    setContentBlog(posts.find((item) => item.id === id).content);
-    setInputValue(posts.find((item) => item.id === id).inputValue);
+    const item = posts.find((item) => item.id === id);
+    setContentBlog(item?.content ?? "");
+    setTopic(item?.topic ?? "");
   }
   
   // tạo chức năng handleDelete để xóa bài viết
@@ -29,14 +29,15 @@ const History = () => {
     setPosts(newPosts);
     //lưu lại mảng posts mới vào localStorage
     localStorage.setItem("blogAiHistory", JSON.stringify(newPosts));
-    setOpen(false);
+    setOpenDelete(false);
   };
+
  
   return (
     <>
       <Historylist posts={posts} openDialogDelete={openDialogDelete} openViewDialog={openViewDialog} />
       <DialogDelete openDelete={openDelete} onOpenChange={setOpenDelete} handleDelete={handleDelete} />
-      <ViewDialog  openView={openView} onOpenChange={setOpenView}  contentBlog={contentBlog}/>
+  <ViewDialog  openView={openView} onOpenChange={setOpenView}  contentBlog={contentBlog} inputValue={topic} />
     </>
   )
 }

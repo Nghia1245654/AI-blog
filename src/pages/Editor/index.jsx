@@ -12,7 +12,17 @@ const Editor = ({  }) => {
     
   const [isLoading, setIsLoading] = useState(false);
   const handleCreate = async () => {
-    const prompt = `Write a blog post about ${inputValue}`;
+    const prompt = `Bạn là một blogger sáng tạo chuyên viết các bài blog cảm xúc, có chiều sâu, mang đậm văn hóa Việt Nam. 
+Hãy viết một bài blog hoàn chỉnh cho ${inputValue}. 
+Bài blog cần có các phần:
+
+1. **Tiêu đề chính**: sáng tạo, hấp dẫn, có thể dùng emoji hoặc ẩn dụ, ví dụ: "## Chào Chị Thảo: Một Cái Tên, Muôn Vạn Câu Chuyện"
+2. **Giới thiệu**: 1 đoạn ngắn gợi mở chủ đề, cảm xúc, và lý do tại sao chủ đề này đáng nói.
+3. **Phân tích chính**: 2–3 phần, mỗi phần có tiêu đề phụ in đậm (**...**) và mô tả chi tiết, liên hệ văn hóa, cảm xúc, hoặc đời sống.
+4. **Kết luận**: tóm lại ý chính, đưa ra thông điệp tích cực, gần gũi với người đọc.
+
+Giọng văn: nhẹ nhàng, tự nhiên, truyền cảm, mang nét Việt Nam hiện đại.  
+Sử dụng Markdown để định dạng tiêu đề, đoạn, và danh sách.`;
     const genAI = new GoogleGenerativeAI(import.meta.env.VITE_API_KEY);
     // tạo const loading để gọi hàm buttonLoading và tắt khi kết thúc gọi api
     try {
